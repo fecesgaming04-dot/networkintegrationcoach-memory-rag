@@ -1,0 +1,67 @@
+{
+  "records": 42,
+  "topics": {
+    "ADB": 6,
+    "Bluetooth PAN": 6,
+    "File Sharing": 6,
+    "Network Basics": 6,
+    "Screen Mirroring": 6,
+    "Troubleshooting": 6,
+    "WiFi Direct": 6
+  },
+  "levels": {
+    "advanced": 14,
+    "beginner": 14,
+    "intermediate": 14
+  },
+  "topic_level_cells": {
+    "ADB|advanced": 2,
+    "ADB|beginner": 2,
+    "ADB|intermediate": 2,
+    "Bluetooth PAN|advanced": 2,
+    "Bluetooth PAN|beginner": 2,
+    "Bluetooth PAN|intermediate": 2,
+    "File Sharing|advanced": 2,
+    "File Sharing|beginner": 2,
+    "File Sharing|intermediate": 2,
+    "Network Basics|advanced": 2,
+    "Network Basics|beginner": 2,
+    "Network Basics|intermediate": 2,
+    "Screen Mirroring|advanced": 2,
+    "Screen Mirroring|beginner": 2,
+    "Screen Mirroring|intermediate": 2,
+    "Troubleshooting|advanced": 2,
+    "Troubleshooting|beginner": 2,
+    "Troubleshooting|intermediate": 2,
+    "WiFi Direct|advanced": 2,
+    "WiFi Direct|beginner": 2,
+    "WiFi Direct|intermediate": 2
+  },
+  "samples": [
+    {
+      "instruction": "[level:beginner] [topic:ADB] verify a Windows 11 phone-to-laptop networking task with real commands and explain why. Scenario 0.",
+      "output": "Goal: pull one Android file to Windows with visible failures.\nSteps: enable USB debugging, run `adb devices`, accept the phone prompt, then pull the file.\n```powershell\nNew-Item -ItemType Directory -Force -Path \"C:\\PhonePulls\\batch_00\" | Out-Null\nadb pull \"/sdcard/Download/report.txt\" \"C:\\PhonePulls\\batch_00\"\nif ($LASTEXITCODE -ne 0) { throw \"adb pull failed\" }\n```\nWhy: `adb devices` proves the bridge is authorized, and `$LASTEXITCODE` prevents a failed copy from looking successful.",
+      "topic": "ADB"
+    },
+    {
+      "instruction": "[level:intermediate] [topic:ADB] explain a Windows 11 phone-to-laptop networking task with real commands and explain why. Scenario 0.",
+      "output": "Goal: pull over wireless ADB after USB authorization.\nSteps: connect USB once, run `adb tcpip 5555`, find the phone IP, then connect by IP.\n```powershell\nadb tcpip 5555\nadb connect 192.168.1.20:5555\nadb pull \"/sdcard/Download/report.txt\" \"C:\\PhonePulls\\batch_00\"\nif ($LASTEXITCODE -ne 0) { Write-Error \"wireless adb pull failed\" }\n```\nWhy: USB is used only to trust the laptop; TCP mode lets ADB work on the same WiFi.",
+      "topic": "ADB"
+    },
+    {
+      "instruction": "[level:advanced] [topic:ADB] verify a Windows 11 phone-to-laptop networking task with real commands and explain why. Scenario 0.",
+      "output": "Goal: run a resilient ADB pull loop with logging and retry behavior.\n```powershell\n$Remote = \"/sdcard/Download/report.txt\"\n$LocalDir = \"C:\\PhonePulls\\batch_00\"\nNew-Item -ItemType Directory -Force -Path $LocalDir | Out-Null\nwhile ($true) {\n  try {\n    adb get-state | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw \"ADB device not ready\" }\n    adb pull $Remote $LocalDir\n    if ($LASTEXITCODE -ne 0) { throw \"adb pull failed with exit code $LASTEXITCODE\" }\n    Write-Host \"Pulled $Remote at $(Get-Date -Format s)\"\n  } catch { Write-Warning $_.Exception.Message }\n  Start-Sleep -Seconds 5\n}\n```\nWhy: each command is checked, so cable drops, authorization loss, and missing files are reported instead of hidden.",
+      "topic": "ADB"
+    },
+    {
+      "instruction": "[level:beginner] [topic:WiFi Direct] set up a Windows 11 phone-to-laptop networking task with real commands and explain why. Scenario 0.",
+      "output": "Goal: confirm the Windows laptop can participate in WiFi Direct.\n```powershell\nnetsh wlan show drivers | Select-String \"Wi-Fi Direct\"\nGet-NetAdapter | Sort-Object Status,Name\n```\nWhy: WiFi Direct depends on the wireless driver exposing a virtual adapter; the check tells you if Windows can form a peer link.",
+      "topic": "WiFi Direct"
+    },
+    {
+      "instruction": "[level:intermediate] [topic:WiFi Direct] debug a Windows 11 phone-to-laptop networking task with real commands and explain why. Scenario 0.",
+      "output": "Goal: test a WiFi Direct or hotspot peer path without guessing.\n```powershell\n$PhoneIp = \"192.168.49.2\"\nTest-Connection $PhoneIp -Count 2\nTest-NetConnection $PhoneIp -Port 7000\n```\nWhy: ping proves layer-3 reachability, while `Test-NetConnection` proves the app port is reachable.",
+      "topic": "WiFi Direct"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.python-version
+.venv/
+venv/
+
+# Runtime state
+logs/
+slot_state/
+*.log
+
+# Generated datasets and vector caches
+data/*.jsonl
+data/*.progress.json
+data/*.summary.json
+data/*.embedding_cache.json
+data/*.anythingllm_embed_progress.json
+data/anythingllm_chunks/
+
+# Keep sample fixtures
+!examples/*.jsonl
+!examples/*.json
+
+# Local environment
+.env
+.env.local
+*.local.ps1
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
