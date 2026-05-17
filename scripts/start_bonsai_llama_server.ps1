@@ -50,9 +50,17 @@ $args = @(
   "--alias", "Bonsai-8B-gguf"
 )
 
+$quotedArgs = $args | ForEach-Object {
+  if ($_ -match '[\s"]') {
+    '"' + ($_ -replace '"', '\"') + '"'
+  } else {
+    $_
+  }
+}
+
 $proc = Start-Process `
   -FilePath $Server `
-  -ArgumentList $args `
+  -ArgumentList ($quotedArgs -join " ") `
   -WindowStyle Hidden `
   -PassThru `
   -RedirectStandardOutput (Join-Path $LogDir "llama_server.out.log") `
