@@ -32,9 +32,17 @@ $env:ANYTHINGLLM_STORAGE_DIR = Join-Path $env:APPDATA "anythingllm-desktop\stora
 $env:MEMORY_TABLE = "networkintegrationcoach_memory"
 $env:MEMORY_PROXY_LOG = Join-Path $LogDir "memory_proxy.log"
 
+$proxyArgs = @("-u", $ProxyScript) | ForEach-Object {
+  if ($_ -match '[\s"]') {
+    '"' + ($_ -replace '"', '\"') + '"'
+  } else {
+    $_
+  }
+}
+
 $proc = Start-Process `
   -FilePath $python.Source `
-  -ArgumentList @("-u", $ProxyScript) `
+  -ArgumentList ($proxyArgs -join " ") `
   -WindowStyle Hidden `
   -PassThru `
   -RedirectStandardOutput (Join-Path $LogDir "memory_proxy.out.log") `
