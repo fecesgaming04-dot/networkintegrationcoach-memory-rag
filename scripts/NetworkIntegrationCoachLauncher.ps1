@@ -3,11 +3,11 @@ $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$SetupRoot = Split-Path -Parent $PSScriptRoot
+$ScriptRoot = $PSScriptRoot
 $OllamaExe = Join-Path $env:LOCALAPPDATA "Programs\Ollama\ollama.exe"
 $AnythingLlmExe = Join-Path $env:LOCALAPPDATA "Programs\AnythingLLM\AnythingLLM.exe"
-$BonsaiServerScript = Join-Path $SetupRoot "start_bonsai_llama_server.ps1"
-$MemoryProxyScript = Join-Path $SetupRoot "start_memory_proxy.ps1"
+$BonsaiServerScript = Join-Path $ScriptRoot "start_bonsai_llama_server.ps1"
+$MemoryProxyScript = Join-Path $ScriptRoot "start_memory_proxy.ps1"
 $AnythingUrl = "http://127.0.0.1:3001"
 $OllamaUrl = "http://127.0.0.1:11434/api/tags"
 $BonsaiUrl = "http://127.0.0.1:8080/v1/models"
